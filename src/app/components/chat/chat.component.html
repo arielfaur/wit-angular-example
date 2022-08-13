@@ -1,1 +1,5 @@
+<p *ngIf="chatMessage$ | async as message">
+    {{ message | json }}
+</p>
+
 <p *ngFor="let content of fillerContent">{{content}}</p>

@@ -1,5 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChatService } from './services/chat.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  text!: string;
   title = 'eboapp';
   mobileQuery: MediaQueryList;
 
@@ -14,7 +16,7 @@ export class AppComponent {
 
   fillerNav = Array.from({length: 50}, (_, i) => `Nav Item ${i + 1}`);
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(chatService: ChatService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addEventListener('change' , this._mobileQueryListener );
@@ -23,4 +25,6 @@ export class AppComponent {
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener ('change', this._mobileQueryListener);
   }
+
+  send() {}
 }

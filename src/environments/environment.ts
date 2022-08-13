@@ -3,6 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  witApiHost: 'https://api.wit.ai',
+  witApiToken: 'CKI4EP4WKOGFSLONE737U7VLG6MN3NGT',
   production: false
 };
 

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -16,9 +18,12 @@ export class ChatComponent implements OnInit {
        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
   );
   
-  constructor() { }
+  chatMessage$!: Observable<any>;
+
+  constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
+    this.chatMessage$ = this.chatService.send('what time is it?');
   }
 
 }
