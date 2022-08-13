@@ -14,7 +14,7 @@ export class ChatComponent implements OnInit {
   messages: Array<Message> = [];
   messageSubject$!: Observable<Message | null>;
 
-  constructor(public chatService: ChatService) { }
+  constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
     this.messageSubject$ = this.chatService.message$.pipe(
@@ -35,7 +35,7 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  handleWitResponseMessage(msg: WitMessage) {
+  private handleWitResponseMessage(msg: WitMessage) {
     if (!msg.intents || msg.intents.length < 1 || !msg.entities) {
       return `🤖  Sorry, it looks like I wasn't trained properly. Could you please rephrase your question?`;
     }
@@ -54,7 +54,7 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  formatResponse(role: string, res: string) {
+  private formatResponse(role: string, res: string) {
     if (role === 'datetime') {
       return new Date(res).toString();
     } else {
