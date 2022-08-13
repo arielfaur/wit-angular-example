@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+    height: 100%;
+    padding-bottom: 16px;
+
+    .message {
+        display: flex;
+        height: fit-content;
+        padding: 16px;
+        border-radius: 20px;
+        width: 75%;
+
+        + .message {
+            margin-top: 16px;
+        }
+
+        &.incoming {
+            background: linear-gradient(135deg, #F8EDDF 0%, rgba(#F8EDDF, 0) 100%);
+        }
+
+        &.outgoing {
+            background: linear-gradient(135deg, #E3F1FF 0%, rgba(#E3F1FF, 0) 100%);
+            align-self: flex-end;
+        }
+    }
+}

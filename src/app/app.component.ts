@@ -16,7 +16,7 @@ export class AppComponent {
 
   fillerNav = Array.from({length: 50}, (_, i) => `Nav Item ${i + 1}`);
 
-  constructor(chatService: ChatService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(private chatService: ChatService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addEventListener('change' , this._mobileQueryListener );
@@ -26,5 +26,11 @@ export class AppComponent {
     this.mobileQuery.removeEventListener ('change', this._mobileQueryListener);
   }
 
-  send() {}
+  send() {
+    if (!this.text) {
+      return;
+    }
+    this.chatService.query(this.text);
+    this.text = '';
+  }
 }

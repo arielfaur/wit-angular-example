@@ -1,29 +1,65 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { Message, WitMessage } from '../../models/message.model';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatComponent implements OnInit {
-  fillerContent = Array.from(
-    {length: 50},
-    () =>
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-       labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-       laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-       voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-       cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-  );
-  
-  chatMessage$!: Observable<any>;
 
-  constructor(private chatService: ChatService) { }
+  messages: Array<Message> = [];
+  messageSubject$!: Observable<Message | null>;
+
+  constructor(public chatService: ChatService) { }
 
   ngOnInit(): void {
-    this.chatMessage$ = this.chatService.send('what time is it?');
+    this.messageSubject$ = this.chatService.message$.pipe(
+      tap(m => {
+        if (m !== null) {
+          console.log('New message arrived', m);
+          this.messages.push(m);
+        }
+      })
+    )
+  }
+
+  renderMessage(msg: Message) {
+    if (msg.type === 'incoming') {
+      return this.handleWitResponseMessage(msg.payload as WitMessage);
+    } else {
+      return msg.payload;
+    }
+  }
+
+  handleWitResponseMessage(msg: WitMessage) {
+    if (!msg.intents || msg.intents.length < 1 || !msg.entities) {
+      return `🤖  Sorry, it looks like I wasn't trained properly. Could you please rephrase your question?`;
+    }
+
+    const intent = msg.intents[0];
+    const entities = Object.entries(msg.entities).map(([name, entities]) => entities[0]);
+    if (entities.length === 0) {
+      return `🤖  Sorry, I'm still missing some context :)`;
+    } else {
+      const response = entities[0].value;
+      const role = entities[0].role;
+      if (!response) {
+        return `🤖  Sorry, I'm still missing some context :)`;
+      }
+      return this.formatResponse(role, response);
+    }
+  }
+
+  formatResponse(role: string, res: string) {
+    if (role === 'datetime') {
+      return new Date(res).toString();
+    } else {
+      return res;
+    }
   }
 
 }

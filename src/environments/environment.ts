@@ -4,6 +4,7 @@
 
 export const environment = {
   witApiHost: 'https://api.wit.ai',
+  witApiVersion: '20220801',
   witApiToken: 'CKI4EP4WKOGFSLONE737U7VLG6MN3NGT',
   production: false
 };
