@@ -18,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // subscribes to chat service to update scroll position when a new message arrives
     this.chatSubscription = this.chatService.message$.pipe(
       debounceTime(300),
       tap(() => this.content.nativeElement.scrollTop = this.content.nativeElement.scrollHeight)

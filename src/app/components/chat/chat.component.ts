@@ -17,6 +17,7 @@ export class ChatComponent implements OnInit {
   constructor(private chatService: ChatService) { }
 
   ngOnInit(): void {
+    // subscribes to chat service to receive updates
     this.messageSubject$ = this.chatService.message$.pipe(
       tap(m => {
         if (m !== null) {
@@ -27,6 +28,11 @@ export class ChatComponent implements OnInit {
     )
   }
 
+  /**
+   * Renders incoming or outgoing messages
+   * @param msg
+   * @returns 
+   */
   renderMessage(msg: Message) {
     if (msg.type === 'incoming') {
       return this.handleWitResponseMessage(msg.payload as WitMessage);
@@ -35,6 +41,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles response from Wit
+   * @param msg 
+   * @returns 
+   */
   private handleWitResponseMessage(msg: WitMessage) {
     if (!msg.intents || msg.intents.length < 1 || !msg.entities) {
       return `🤖  Sorry, it looks like I wasn't trained properly. Could you please rephrase your question?`;
@@ -54,6 +65,12 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  /**
+   * Formats response string (currently only supports role datetime and plain strings)
+   * @param role 
+   * @param res 
+   * @returns 
+   */
   private formatResponse(role: string, res: string) {
     if (role === 'datetime') {
       return new Date(res).toString();

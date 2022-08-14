@@ -10,6 +10,10 @@ import { Message, WitMessage } from '../models/message.model';
 })
 export class ChatService implements OnDestroy {
 
+  /**
+   * In a more complex scenario it would probably be more convenient to add state management (NGRX, NGXS, MobX, etc.)
+   * For a simple scenario like this a Subject is sufficient
+   */
   public readonly q$ = new BehaviorSubject<string | null>(null); // cache last sent message
   public readonly message$ = new ReplaySubject<Message>(50); // cache last 50 received messages
 
