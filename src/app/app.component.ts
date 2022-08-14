@@ -1,29 +1,31 @@
-import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { tap, debounceTime } from 'rxjs/operators';
 import { ChatService } from './services/chat.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   text!: string;
-  title = 'eboapp';
-  mobileQuery: MediaQueryList;
+  @ViewChild('content') private content!: ElementRef;
+  private chatSubscription!: Subscription;
 
-  private _mobileQueryListener: () => void;
+  constructor(private chatService: ChatService, changeDetectorRef: ChangeDetectorRef) {
+  }
 
-  fillerNav = Array.from({length: 50}, (_, i) => `Nav Item ${i + 1}`);
-
-  constructor(private chatService: ChatService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addEventListener('change' , this._mobileQueryListener );
+  ngOnInit(): void {
+    this.chatSubscription = this.chatService.message$.pipe(
+      debounceTime(300),
+      tap(() => this.content.nativeElement.scrollTop = this.content.nativeElement.scrollHeight)
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
-    this.mobileQuery.removeEventListener ('change', this._mobileQueryListener);
+    this.chatSubscription.unsubscribe();
   }
 
   send() {
