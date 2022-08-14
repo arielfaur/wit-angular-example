@@ -1,4 +1,7 @@
-# Eboapp
+# Wit chat demo
+
+https://user-images.githubusercontent.com/3749268/184547101-430c0edb-b7c8-4b5e-b639-ad89099d847a.mp4
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.5.
 
